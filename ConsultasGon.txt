@@ -1,0 +1,12 @@
+Consultas a Gon
+-----------------
+
+1.Porque se le pone al controller @RequestsBody o @PathVariable en el metodo que hace el post o get?
+	[MATY]Supongo que es porque de alguna forma el Java tiene que saber que parte tomar del mensaje completo, si es una parte de la URL o si es el BODY o HEADER.
+
+2.Porque el autowired no funciona cuando tengo las clases en distintos packages?
+3.Como activar el trace en postman
+4.Como solucionar el error del cors en el backend (ver consola en website para mas detalle)(ver parametros en el header)
+5.Como linkea el playerexception con el controller.
+6.Como debugeo
+7.Explicar como funciona la URI en el POST

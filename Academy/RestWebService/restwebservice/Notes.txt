@@ -1,0 +1,26 @@
+---------------------------------------------------------------------------------------------------
+--Debug Console -----------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------
+src/main/properties/application.properties
+
+logging.level.org.springframework=debug
+---------------------------------------------------------------------------------------------------
+
+
+---------------------------------------------------------------------------------------------------
+--Part of a WS ------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------
+
+GET -> retrieve details -> fetch employee details -> localhost:8000/employees
+ 
+POST -> insert -> insert employee details -> localhost:8000/employees/dto
+
+PUT -> update -> update employee details -> localhost:8000/employees/update/{employeeId}
+
+DELETE -> delete -> delete employee details -> localhost:8000/employees/delete/{employeeId}
+
+CLIENT -> POSTMAN
+
+---------------------------------------------------------------------------------------------------
+
+Rest API is so powerful because i don't have to do any specific coding to handle the request and responses
