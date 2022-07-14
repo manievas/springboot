@@ -31,6 +31,21 @@ public class PlayerManager {
 		list.add(player);
 		return player;
 	}
+	
+	public Player deletePlayer(int playerId) {
+		Player playerToDelete = new Player(null, null, playerId);
+		playerToDelete = getPlayerById(playerId);
+		list.remove(playerToDelete);
+		return playerToDelete;
+	}
+	
+	public Player updatePlayer(int playerId, Player player) {
+		
+		list.set(playerId-1, player);
+		
+		return player;
+	}
+	
 }
 
 
