@@ -1,0 +1,13 @@
+Ways of communicate with DB
+---------------------------
+1- EntityManager - we have manually setup
+
+URL to DB access : http://localhost:8080/h2-console/
+Configure previously 
+JDBC URL: jdbc:h2:mem:e76e1daf-8c14-4075-978e-f3aa8fdce141 
+(take from spring console "H2 console available at '/h2-console'. Database available at 'jdbc:h2:mem:e76e1daf-8c14-4075-978e-f3aa8fdce141'")
+
+Click Test Connection and Connect.
+
+
+2- JPA Repository - internally communicates to EntityManager
