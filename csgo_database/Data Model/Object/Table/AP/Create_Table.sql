@@ -1,0 +1,244 @@
+--Rubro
+CREATE TABLE ap_rubro 
+(
+  rubro_id NUMBER GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1) PRIMARY KEY,
+  nombre VARCHAR2(100) NOT NULL,
+  creation_date DATE DEFAULT SYSDATE,
+  created_by VARCHAR2(10) DEFAULT USER,
+  last_update_date DATE,
+  last_upadted_by VARCHAR2(10)
+)
+TABLESPACE tbs1_eco;
+
+COMMENT ON TABLE ap_rubro IS 'Maestro de rubros de proveedores';
+
+COMMENT ON COLUMN ap_rubro.rubro_id IS 'Identificador secuencial de la tabla. Se calcula con la secuencia seq_transaccion_id';
+COMMENT ON COLUMN ap_rubro.nombre IS 'Nombre del rubro (Ej: Supermercado Mayorista, Supermercado Minorista)';
+COMMENT ON COLUMN ap_rubro.creation_date IS 'Auditoria: Fecha de creacion del registro';
+COMMENT ON COLUMN ap_rubro.created_by IS 'Auditoria: Creado por (usuario)';
+COMMENT ON COLUMN ap_rubro.last_update_date IS 'Auditoria: Fecha de actualizacion del registro';
+COMMENT ON COLUMN ap_rubro.last_upadted_by IS 'Auditoria: Actualizado por (usuario)';
+
+
+--proveedor
+CREATE TABLE ap_proveedor
+(
+  proveedor_id NUMBER GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1) PRIMARY KEY,
+  nombre VARCHAR2(100) NOT NULL,
+  rubro_id NUMBER,
+  creation_date DATE DEFAULT SYSDATE,
+  created_by VARCHAR2(10) DEFAULT USER,
+  last_update_date DATE,
+  last_upadted_by VARCHAR2(10),
+  CONSTRAINT rubro_fk FOREIGN KEY (rubro_id) references ap_rubro(rubro_id)
+)
+TABLESPACE tbs1_eco;
+
+COMMENT ON TABLE ap_proveedor IS 'Maestro de proveedores';
+
+COMMENT ON COLUMN ap_proveedor.proveedor_id IS 'Identificador secuencial de la tabla';
+COMMENT ON COLUMN ap_proveedor.nombre IS 'Nombre del proveedor';
+COMMENT ON COLUMN ap_proveedor.rubro_id IS 'ID del rubro del proveedor (ap_rubro.rubro_id)';
+COMMENT ON COLUMN ap_proveedor.creation_date IS 'Auditoria: Fecha de creacion del registro';
+COMMENT ON COLUMN ap_proveedor.created_by IS 'Auditoria: Creado por (usuario)';
+COMMENT ON COLUMN ap_proveedor.last_update_date IS 'Auditoria: Fecha de actualizacion del registro';
+COMMENT ON COLUMN ap_proveedor.last_upadted_by IS 'Auditoria: Actualizado por (usuario)';
+
+
+--Sucursal
+CREATE TABLE ap_sucursal
+(
+  sucursal_id NUMBER GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1) PRIMARY KEY,
+  nombre VARCHAR2(100) NOT NULL,
+  proveedor_id NUMBER NOT NULL,
+  direccion VARCHAR2(500) NOT NULL,
+  zona VARCHAR2(100) NOT NULL,
+  telefono NUMBER,
+  creation_date DATE DEFAULT SYSDATE,
+  created_by VARCHAR2(10) DEFAULT USER,
+  last_update_date DATE,
+  last_upadted_by VARCHAR2(10), 
+  CONSTRAINT proveedor_fk FOREIGN KEY (proveedor_id) references ap_proveedor(proveedor_id)  
+)
+TABLESPACE tbs1_eco;
+
+COMMENT ON TABLE ap_sucursal IS 'Maestro de sucursales del proveedor';
+
+COMMENT ON COLUMN ap_sucursal.sucursal_id IS 'Identificador secuencial de la tabla';
+COMMENT ON COLUMN ap_sucursal.nombre IS 'Nombre de la sucursal del proveedor';
+COMMENT ON COLUMN ap_sucursal.nombre IS 'ID del proveedor de la sucursal (ap_proveedor.proveedor_id)';
+COMMENT ON COLUMN ap_sucursal.direccion IS 'Direccion de la sucursal (Ej: Gallo 189, 1ro C))';
+COMMENT ON COLUMN ap_sucursal.zona IS 'Zona de la sucursal formato provincia-localidad-barrio (Ej: BUENOS-AIRES-CABA-ALMAGRO)';
+COMMENT ON COLUMN ap_sucursal.telefono IS 'Telefono de la sucursal (Sin guiones ni espacios)';
+COMMENT ON COLUMN ap_sucursal.creation_date IS 'Auditoria: Fecha de creacion del registro';
+COMMENT ON COLUMN ap_sucursal.created_by IS 'Auditoria: Creado por (usuario)';
+COMMENT ON COLUMN ap_sucursal.last_update_date IS 'Auditoria: Fecha de actualizacion del registro';
+COMMENT ON COLUMN ap_sucursal.last_upadted_by IS 'Auditoria: Actualizado por (usuario)';
+
+--Continuar desde aca
+--Factura
+CREATE TABLE ap_factura
+(
+  factura_id NUMBER GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1) PRIMARY KEY,
+  numero VARCHAR2(15) NOT NULL,
+  estado VARCHAR2(10) NOT NULL,
+  sucursal_id NUMBER NOT NULL,
+  fecha DATE NOT NULL,
+  creation_date DATE DEFAULT SYSDATE,
+  created_by VARCHAR2(10) DEFAULT USER,
+  last_update_date DATE,
+  last_upadted_by VARCHAR2(10),  
+  CONSTRAINT sucursal_fk FOREIGN KEY (sucursal_id) references ap_sucursal(sucursal_id)
+)
+TABLESPACE tbs1_eco;
+
+COMMENT ON TABLE inv_subcategoria IS 'Tabla de subcategorias de item de inventario (Ej: Gaseosa, Carne, Soda)';
+
+COMMENT ON COLUMN inv_subcategoria.subcategoria_id IS 'Identificador secuencial de la tabla';
+COMMENT ON COLUMN inv_subcategoria.codigo IS 'Codigo de 3 digitos de la subcategoria de item de inventario (Ej: GAS, CAR, SOD)';
+COMMENT ON COLUMN inv_subcategoria.subcategoria IS 'Nombre de la subcategoria de item de inventario (Ej: Gaseosa, Carne, Soda)';
+COMMENT ON COLUMN inv_subcategoria.categoria_id IS 'ID del tipo de categoria al que pertenece (inv_categoria.categoria_id)';
+COMMENT ON COLUMN inv_subcategoria.creation_date IS 'Auditoria: Fecha de creacion del registro';
+COMMENT ON COLUMN inv_subcategoria.created_by IS 'Auditoria: Creado por (usuario)';
+COMMENT ON COLUMN inv_subcategoria.last_update_date IS 'Auditoria: Fecha de actualizacion del registro';
+COMMENT ON COLUMN inv_subcategoria.last_upadted_by IS 'Auditoria: Actualizado por (usuario)';
+
+
+--Lineas de Factura
+CREATE TABLE inv_unidad_medida
+(
+  unidad_id NUMBER GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1) PRIMARY KEY,
+  codigo VARCHAR2(3) NOT NULL UNIQUE,
+  unidad_medida VARCHAR2(50) NOT NULL,
+  creation_date DATE DEFAULT SYSDATE,
+  created_by VARCHAR2(10) DEFAULT USER,
+  last_update_date DATE,
+  last_upadted_by VARCHAR2(10)
+)
+TABLESPACE tbs1_eco;
+
+COMMENT ON TABLE inv_unidad_medida IS 'Tabla de unidades de medida (Ej: Litro)';
+
+COMMENT ON COLUMN inv_unidad_medida.unidad_id IS 'Identificador secuencial de la tabla';
+COMMENT ON COLUMN inv_unidad_medida.codigo IS 'Codigo unico de la unidad de medida (Ej: LTR)';
+COMMENT ON COLUMN inv_unidad_medida.unidad_medida IS 'Nombre de la unidad de medida (Ej: Litro)';
+COMMENT ON COLUMN inv_unidad_medida.creation_date IS 'Auditoria: Fecha de creacion del registro';
+COMMENT ON COLUMN inv_unidad_medida.created_by IS 'Auditoria: Creado por (usuario)';
+COMMENT ON COLUMN inv_unidad_medida.last_update_date IS 'Auditoria: Fecha de actualizacion del registro';
+COMMENT ON COLUMN inv_unidad_medida.last_upadted_by IS 'Auditoria: Actualizado por (usuario)';
+
+--Pago (Hacer por trigger el importte del pago, factura en estado completo sumo las lineas)
+CREATE TABLE inv_item
+(
+  item_id NUMBER GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1) PRIMARY KEY,
+  codigo VARCHAR2(150) NOT NULL UNIQUE,
+  item VARCHAR2(100) NOT NULL,
+  subcategoria_id NUMBER NOT NULL,
+  marca VARCHAR2(100),
+  medida FLOAT,
+  unidad_medida VARCHAR2(3),
+  pack VARCHAR2(1) DEFAULT 'N',
+  cantidad NUMBER DEFAULT 1,
+  estado VARCHAR2(1) DEFAULT 'A' NOT NULL,
+  creation_date DATE DEFAULT SYSDATE,
+  created_by VARCHAR2(10) DEFAULT USER,
+  last_update_date DATE,
+  last_upadted_by VARCHAR2(10),  
+  CONSTRAINT subcategoria_fk FOREIGN KEY (subcategoria_id) references inv_subcategoria(subcategoria_id),
+  CONSTRAINT unidad_fk FOREIGN KEY (unidad_medida) references inv_unidad_medida(unidad_id)
+)
+TABLESPACE tbs1_eco;
+
+COMMENT ON TABLE inv_item IS 'Tabla de items de inventario (Ej: Coca Cola, Alfajor Jorgito, Leche Sancor)';
+
+COMMENT ON COLUMN inv_item.item_id IS 'Identificador secuencial de la tabla';
+COMMENT ON COLUMN inv_item.codigo IS 'Codigo unico del item de inventario compuesto por: Categoria-Tipo-Pack-Item-Medida-Unidad de medida (Ej: BEB-GAS-PACK-Coca Cola-2.25 litros)';
+COMMENT ON COLUMN inv_item.item IS 'Nombre del item de inventario (Ej: Coca Cola,  Alfajor Jorgito, Leche Sancor)';
+COMMENT ON COLUMN inv_item.subcategoria_id IS 'ID de la subcategoria de item al que pertenece (inv_subcategoria.subcategoria_id)';
+COMMENT ON COLUMN inv_item.marca IS 'Marca del item de inventario (muchas veces coincidira con el item)';
+COMMENT ON COLUMN inv_item.medida IS 'Medida del item (Ej: 2.25, 2, 100)';
+COMMENT ON COLUMN inv_item.unidad_medida IS 'Unidad de medida del item de inventario (inv_unidad_medida.unidad_id)';
+COMMENT ON COLUMN inv_item.pack IS 'Flag que indica si el item es un pack';
+COMMENT ON COLUMN inv_item.cantidad IS 'Cantidad del item (1 para los que no son packs)';
+COMMENT ON COLUMN inv_item.estado IS 'Estado del item de inventario (A: Activo, I: Inactivo)';
+COMMENT ON COLUMN inv_item.creation_date IS 'Auditoria: Fecha de creacion del registro';
+COMMENT ON COLUMN inv_item.created_by IS 'Auditoria: Creado por (usuario)';
+COMMENT ON COLUMN inv_item.last_update_date IS 'Auditoria: Fecha de actualizacion del registro';
+COMMENT ON COLUMN inv_item.last_upadted_by IS 'Auditoria: Actualizado por (usuario)';
+
+--Metodo de pago
+CREATE TABLE inv_item_serial
+(
+  serial_id NUMBER GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1) PRIMARY KEY,
+  codigo_barras VARCHAR2(13),
+  item_id NUMBER NOT NULL,
+  fecha_vencimiento DATE,
+  inventario_id NUMBER NOT NULL,
+  creation_date DATE DEFAULT SYSDATE,
+  created_by VARCHAR2(10) DEFAULT USER,
+  last_update_date DATE,
+  last_upadted_by VARCHAR2(10),  
+  CONSTRAINT item_fk FOREIGN KEY (item_id) references inv_item(item_id),
+  CONSTRAINT inventario_fk FOREIGN KEY (inventario_id) references inv_inventario(inventario_id)   
+)
+TABLESPACE tbs1_eco;
+
+COMMENT ON TABLE inv_item_serial IS 'Tabla de seriales de inventario';
+
+COMMENT ON COLUMN inv_item_serial.serial_id IS 'Identificador secuencial de la tabla';
+COMMENT ON COLUMN inv_item_serial.codigo_barras IS 'Codigo de barras del serial (13 digitos)';
+COMMENT ON COLUMN inv_item_serial.item_id IS 'ID del item al que pertenece (inv_item.item_id)';
+COMMENT ON COLUMN inv_item_serial.inventario_id IS 'ID del inventario al que pertenece (inv_inventario.item_id)';
+COMMENT ON COLUMN inv_item_serial.fecha_vencimiento IS 'Fecha de vencimiento del serial';
+COMMENT ON COLUMN inv_item_serial.creation_date IS 'Auditoria: Fecha de creacion del registro';
+COMMENT ON COLUMN inv_item_serial.created_by IS 'Auditoria: Creado por (usuario)';
+COMMENT ON COLUMN inv_item_serial.last_update_date IS 'Auditoria: Fecha de actualizacion del registro';
+COMMENT ON COLUMN inv_item_serial.last_upadted_by IS 'Auditoria: Actualizado por (usuario)';
+
+
+--transaccion
+CREATE TABLE inv_transaccion
+(
+  transaccion_id NUMBER PRIMARY KEY,
+  inventario_id NUMBER NOT NULL,
+  tipo VARCHAR2(3) NOT NULL,
+  creation_date DATE DEFAULT SYSDATE,
+  created_by VARCHAR2(10) DEFAULT USER,
+  last_update_date DATE,
+  last_upadted_by VARCHAR2(10),
+  CONSTRAINT trx_inventario_fk FOREIGN KEY (inventario_id) references inv_inventario(inventario_id)
+)
+TABLESPACE tbs1_eco;
+
+COMMENT ON TABLE inv_transaccion IS 'Tabla de cabecera de transacciones de inventario';
+
+COMMENT ON COLUMN inv_transaccion.transaccion_id IS 'Identificador secuencial de la tabla. Se calcula con la secuencia seq_transaccion_id';
+COMMENT ON COLUMN inv_transaccion.inventario_id IS 'ID del inventario de la transaccion (inv_inventario.inventario_id)';
+COMMENT ON COLUMN inv_transaccion.tipo IS 'Tipo de transaccion (Entrada o Salida)';
+COMMENT ON COLUMN inv_transaccion.creation_date IS 'Auditoria: Fecha de creacion del registro';
+COMMENT ON COLUMN inv_transaccion.created_by IS 'Auditoria: Creado por (usuario)';
+COMMENT ON COLUMN inv_transaccion.last_update_date IS 'Auditoria: Fecha de actualizacion del registro';
+COMMENT ON COLUMN inv_transaccion.last_upadted_by IS 'Auditoria: Actualizado por (usuario)';
+
+--detalle de transaccion
+CREATE TABLE inv_detalle_transaccion
+(
+  transaccion_id NUMBER NOT NULL,
+  serial_id NUMBER NOT NULL,
+  creation_date DATE DEFAULT SYSDATE,
+  created_by VARCHAR2(10) DEFAULT USER,
+  last_update_date DATE,
+  last_upadted_by VARCHAR2(10),
+  CONSTRAINT transaccion_fk FOREIGN KEY (transaccion_id) references inv_transaccion(transaccion_id),
+  CONSTRAINT serial_fk FOREIGN KEY (serial_id) references inv_item_serial(serial_id)
+)
+TABLESPACE tbs1_eco;
+
+COMMENT ON TABLE inv_detalle_transaccion IS 'Tabla de detalle de de transacciones de inventario';
+
+COMMENT ON COLUMN inv_detalle_transaccion.transaccion_id IS 'ID de la cabecera de transaccion (inv_transaccion.transaccion_id)';
+COMMENT ON COLUMN inv_detalle_transaccion.serial_id IS 'ID del serial (inv_item_serial.serial_id)';
+COMMENT ON COLUMN inv_detalle_transaccion.creation_date IS 'Auditoria: Fecha de creacion del registro';
+COMMENT ON COLUMN inv_detalle_transaccion.created_by IS 'Auditoria: Creado por (usuario)';
+COMMENT ON COLUMN inv_detalle_transaccion.last_update_date IS 'Auditoria: Fecha de actualizacion del registro';
+COMMENT ON COLUMN inv_detalle_transaccion.last_upadted_by IS 'Auditoria: Actualizado por (usuario)';

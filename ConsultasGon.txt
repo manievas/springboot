@@ -5,8 +5,20 @@ Consultas a Gon
 	[MATY]Supongo que es porque de alguna forma el Java tiene que saber que parte tomar del mensaje completo, si es una parte de la URL o si es el BODY o HEADER.
 
 2.Porque el autowired no funciona cuando tengo las clases en distintos packages?
+   Suponemos que es porque spring scanea un solo paquete.
+   https://www.baeldung.com/spring-component-scanning
+
 3.Como activar el trace en postman
+
 4.Como solucionar el error del cors en el backend (ver consola en website para mas detalle)(ver parametros en el header)
+https://stackoverflow.com/questions/44697883/can-you-completely-disable-cors-support-in-spring
+
 5.Como linkea el playerexception con el controller.
 6.Como debugeo
 7.Explicar como funciona la URI en el POST
+
+8.Como paquetizar las apis (Por cada entidad por el momento tengo 5 apis distintas)
+----------------------------------------------------------------------------------------------------
+
+9. El autowired se usa para interfaces?
+10. Porque el JPARepository no funciona y si el EntityManager

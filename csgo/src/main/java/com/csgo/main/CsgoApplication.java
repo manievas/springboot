@@ -5,8 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 
 @SpringBootApplication
-@ComponentScan(basePackages = {"com.csgo.entity", 
-		                       "com.csgo.application", 
+@ComponentScan(basePackages = {"com.csgo.application", 
 		                       "com.csgo.service", 
 		                       "com.csgo.exception", 
 		                       })
